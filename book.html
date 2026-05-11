@@ -105,9 +105,9 @@ body{background:var(--lime);color:var(--text);display:flex;flex-direction:column
 .choice-text{font-size:15px;font-weight:500;color:var(--text);}
 
 /* NUMBER GRID */
-.num-grid{display:flex;flex-wrap:wrap;gap:10px;margin-left:36px;}
+.num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-left:36px;}
 .num-pill{
-  width:70px;height:52px;
+  width:auto;height:52px;
   background:var(--pill-bg);border:1.5px solid var(--pill-border);
   border-radius:14px;
   display:flex;align-items:center;justify-content:center;
