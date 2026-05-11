@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Your Instant Quote — Novos Cleans</title>
+<meta name="description" content="Get an instant cleaning quote from Novos Cleans. Tell us about your home and see your price in 60 seconds.">
+<link rel="canonical" href="https://novoscleans.com/book">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --cream:#F5F5F0;
+  --cream2:#eaeae5;
+  --brown:#0D0D0D;
+  --brown-soft:rgba(13,13,13,0.80);
+  --brown-light:#444444;
+  --brown-dark:#0D0D0D;
+  --text:#0D0D0D;
+  --text-light:#888884;
+  --white:#fff;
+  --green:#C8F400;
+  --lime:#C8F400;
+  --pill-bg:rgba(255,255,255,0.70);
+  --pill-border:rgba(13,13,13,0.12);
+  --pill-hover:#fff;
+  --pill-selected:rgba(200,244,0,0.18);
+}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;}
+body{background:var(--cream);color:var(--text);display:flex;flex-direction:column;min-height:100vh;}
+
+/* ── HEADER ── */
+.form-header{
+  background:var(--cream);
+  border-bottom:1px solid rgba(124,63,43,0.1);
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.form-header img{height:42px;width:auto;}
+.form-header .back-link{
+  font-size:13px;font-weight:600;color:var(--text-light);
+  text-decoration:none;
+  display:flex;align-items:center;gap:6px;
+}
+.form-header .back-link:hover{color:var(--brown);}
+
+/* ── PROGRESS BAR ── */
+.progress-bar-wrap{height:3px;background:rgba(124,63,43,0.1);}
+.progress-bar{height:3px;background:var(--brown-soft);transition:width 0.4s ease;}
+
+/* ── MAIN FORM AREA ── */
+.form-stage{
+  flex:1;
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:40px 24px;
+  overflow:visible;
+}
+.slide-wrap{
+  width:100%;max-width:620px;
+  position:relative;min-height:400px;
+}
+
+/* ── QUESTION CARD ── */
+.question{
+  position:absolute;top:0;left:0;width:100%;
+  opacity:0;transform:translateY(40px);
+  pointer-events:none;
+  transition:opacity 0.35s ease,transform 0.35s ease;
+}
+.question.active{
+  opacity:1;transform:translateY(0);
+  pointer-events:all;
+  position:relative;
+}
+.question.exit-up{
+  opacity:0;transform:translateY(-40px);
+  pointer-events:none;
+}
+
+/* ── QUESTION NUMBER BADGE ── */
+.q-num{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:6px;
+  background:var(--brown-soft);color:#fff;
+  font-size:12px;font-weight:700;
+  margin-right:10px;flex-shrink:0;
+}
+.q-label{
+  display:flex;align-items:center;
+  font-size:clamp(1.4rem,3.5vw,1.9rem);
+  font-weight:700;color:var(--brown-dark);
+  margin-bottom:10px;line-height:1.25;
+}
+.q-sub{
+  font-size:15px;color:var(--text-light);
+  margin-bottom:28px;margin-left:36px;
+}
+
+/* ── CHOICE PILLS ── */
+.choices{display:flex;flex-direction:column;gap:10px;margin-left:36px;}
+.choice{
+  display:flex;align-items:center;gap:14px;
+  background:var(--pill-bg);
+  border:1.5px solid var(--pill-border);
+  border-radius:100px;
+  padding:13px 20px;
+  cursor:pointer;
+  transition:background 0.15s,border-color 0.15s,transform 0.1s;
+  max-width:420px;
+  user-select:none;
+}
+.choice:hover{background:var(--pill-hover);border-color:rgba(124,63,43,0.35);}
+.choice.selected{
+  background:var(--pill-selected);
+  border-color:#C8F400;
+}
+.choice-letter{
+  width:28px;height:28px;border-radius:50%;
+  border:1.5px solid var(--brown-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:var(--brown);
+  flex-shrink:0;background:transparent;
+  transition:background 0.15s,color 0.15s;
+}
+.choice.selected .choice-letter{
+  background:#C8F400;color:#0D0D0D;border-color:#C8F400;
+}
+.choice-text{font-size:15px;font-weight:500;color:var(--text);}
+
+/* ── MULTI-SELECT hint ── */
+.multi-hint{font-size:12px;color:var(--text-light);margin-left:36px;margin-bottom:12px;font-style:italic;}
+
+/* ── NUMBER GRID (bedrooms/bathrooms) ── */
+.num-grid{display:flex;flex-wrap:wrap;gap:10px;margin-left:36px;}
+.num-pill{
+  width:70px;height:52px;
+  background:var(--pill-bg);
+  border:1.5px solid var(--pill-border);
+  border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;color:var(--text);
+  cursor:pointer;
+  transition:background 0.15s,border-color 0.15s;
+}
+.num-pill:hover{background:var(--pill-hover);border-color:rgba(124,63,43,0.35);}
+.num-pill.selected{background:var(--pill-selected);border-color:#C8F400;color:#0D0D0D;}
+
+/* ── TEXT INPUT ── */
+.text-field{
+  margin-left:36px;
+  display:flex;flex-direction:column;gap:8px;
+}
+.text-field input{
+  background:var(--pill-bg);
+  border:1.5px solid var(--pill-border);
+  border-radius:12px;
+  padding:14px 18px;
+  font-size:16px;color:var(--text);
+  outline:none;max-width:420px;
+  transition:border-color 0.15s;
+  font-family:inherit;
+}
+.text-field input:focus{border-color:var(--brown);}
+.text-field input::placeholder{color:var(--text-light);}
+
+/* ── CONTACT FIELDS ── */
+.contact-fields{margin-left:36px;display:flex;flex-direction:column;gap:12px;}
+.contact-row{display:flex;gap:12px;flex-wrap:wrap;}
+.contact-fields input{
+  background:var(--pill-bg);
+  border:1.5px solid var(--pill-border);
+  border-radius:12px;
+  padding:14px 18px;
+  font-size:15px;color:var(--text);
+  outline:none;width:100%;max-width:420px;
+  transition:border-color 0.15s;
+  font-family:inherit;
+}
+.contact-fields input:focus{border-color:var(--brown);}
+.contact-fields input::placeholder{color:var(--text-light);}
+.contact-fields .half{max-width:200px;flex:1;}
+
+/* ── OK BUTTON ── */
+.btn-ok{
+  display:inline-flex;align-items:center;gap:8px;
+  margin-top:24px;margin-left:36px;
+  background:var(--brown-soft);color:#fff;
+  border:none;border-radius:100px;
+  padding:14px 28px;font-size:15px;font-weight:700;
+  cursor:pointer;
+  transition:background 0.15s,transform 0.1s;
+}
+.btn-ok:hover{background:var(--brown);transform:translateY(-1px);}
+.btn-ok:active{transform:translateY(0);}
+.btn-ok .ok-hint{font-size:11px;opacity:0.7;margin-left:4px;}
+
+/* ── QUOTE SCREEN ── */
+.quote-screen{
+  max-width:560px;margin:0 auto;text-align:center;
+  padding:20px 0;
+}
+.quote-badge{
+  display:inline-block;
+  background:rgba(45,158,107,0.12);
+  color:var(--green);
+  border:1.5px solid rgba(45,158,107,0.3);
+  border-radius:100px;
+  padding:6px 18px;font-size:13px;font-weight:700;
+  margin-bottom:20px;
+}
+.quote-screen h2{
+  font-size:clamp(1.6rem,4vw,2.2rem);
+  font-weight:800;color:var(--brown-dark);
+  margin-bottom:8px;
+}
+.quote-screen .quote-sub{
+  font-size:15px;color:var(--text-light);margin-bottom:32px;
+}
+.price-card{
+  background:var(--white);
+  border:2px solid rgba(124,63,43,0.12);
+  border-radius:24px;
+  padding:28px;
+  margin-bottom:24px;
+  box-shadow:0 8px 40px rgba(0,0,0,0.06);
+  text-align:left;
+}
+.price-service-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;
+  color:var(--brown);background:rgba(124,63,43,0.08);
+  border-radius:100px;padding:4px 12px;
+  display:inline-block;margin-bottom:16px;
+}
+.price-main{
+  display:flex;align-items:flex-end;gap:10px;
+  margin-bottom:4px;
+}
+.price-amount{
+  font-size:clamp(2.6rem,8vw,3.6rem);
+  font-weight:900;color:var(--brown);
+  line-height:1;
+}
+.price-label{font-size:15px;color:var(--text-light);margin-bottom:0;padding-bottom:4px;}
+.price-meta{font-size:13px;color:var(--text-light);margin-bottom:20px;}
+.price-savings{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(45,158,107,0.1);
+  color:var(--green);
+  border-radius:100px;padding:5px 14px;
+  font-size:12px;font-weight:700;margin-bottom:20px;
+}
+/* Receipt-style breakdown */
+.price-breakdown{
+  display:flex;flex-direction:column;gap:0;
+  border-top:1px solid rgba(124,63,43,0.1);
+  padding-top:20px;
+  margin-top:4px;
+}
+.breakdown-row{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:14px;padding:8px 0;
+  border-bottom:1px solid rgba(124,63,43,0.05);
+}
+.breakdown-row:last-child{border-bottom:none;}
+.breakdown-row .label{color:var(--text-light);}
+.breakdown-row .val{font-weight:600;color:var(--text);}
+.breakdown-row.discount .label{color:var(--green);}
+.breakdown-row.discount .val{color:var(--green);}
+.breakdown-total{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 0 0;margin-top:8px;
+  border-top:2px solid rgba(124,63,43,0.15);
+  font-size:16px;font-weight:800;color:var(--brown);
+}
+/* What's included chips */
+.includes-section{
+  background:rgba(124,63,43,0.04);
+  border:1.5px solid rgba(124,63,43,0.1);
+  border-radius:16px;padding:18px 20px;
+  margin-bottom:24px;text-align:left;
+}
+.includes-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:var(--brown);margin-bottom:12px;}
+.includes-grid{display:flex;flex-wrap:wrap;gap:8px;}
+.include-chip{
+  display:flex;align-items:center;gap:6px;
+  font-size:12.5px;color:var(--text);
+  background:var(--white);border:1px solid rgba(124,63,43,0.12);
+  border-radius:100px;padding:5px 12px;
+}
+
+.btn-accept{
+  width:100%;
+  background:var(--brown-soft);color:#fff;
+  border:none;border-radius:100px;
+  padding:18px 32px;
+  font-size:17px;font-weight:700;
+  cursor:pointer;
+  transition:background 0.15s,transform 0.1s;
+  margin-bottom:12px;
+}
+.btn-accept:hover{background:var(--brown-dark);transform:translateY(-1px);}
+.btn-edit{
+  background:transparent;border:none;
+  color:var(--text-light);font-size:13px;
+  cursor:pointer;text-decoration:underline;
+}
+
+/* ── CONFIRM SCREEN ── */
+.confirm-screen{
+  max-width:480px;margin:0 auto;text-align:center;
+}
+.confirm-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:rgba(45,158,107,0.12);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+  font-size:32px;
+}
+.confirm-screen h2{
+  font-size:1.8rem;font-weight:800;color:var(--brown-dark);margin-bottom:12px;
+}
+.confirm-screen p{font-size:15px;color:var(--text-light);line-height:1.7;margin-bottom:8px;}
+.confirm-screen .confirm-detail{
+  background:var(--white);border-radius:16px;padding:20px 24px;
+  margin:24px 0;text-align:left;
+  box-shadow:0 4px 20px rgba(0,0,0,0.05);
+}
+.confirm-detail-row{
+  display:flex;justify-content:space-between;
+  font-size:14px;padding:6px 0;
+  border-bottom:1px solid rgba(124,63,43,0.06);
+}
+.confirm-detail-row:last-child{border:none;}
+.confirm-detail-row .dl{color:var(--text-light);}
+.confirm-detail-row .dv{font-weight:600;color:var(--text);}
+
+/* ── FOOTER NAV ── */
+.form-footer{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 24px;
+  border-top:1px solid rgba(124,63,43,0.08);
+}
+.nav-arrows{display:flex;gap:8px;}
+.nav-arrow{
+  width:38px;height:38px;border-radius:10px;
+  background:rgba(124,63,43,0.08);border:none;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--brown);
+  transition:background 0.15s;
+}
+.nav-arrow:hover:not(:disabled){background:rgba(124,63,43,0.18);}
+.nav-arrow:disabled{opacity:0.3;cursor:not-allowed;}
+.step-counter{font-size:12px;color:var(--text-light);}
+.powered{font-size:11px;color:var(--text-light);}
+.powered a{color:var(--brown);text-decoration:none;font-weight:600;}
+
+/* ── DATE PICKER ── */
+.date-quickpicks{display:flex;flex-wrap:wrap;gap:10px;margin-left:36px;margin-bottom:20px;}
+.date-chip{
+  background:var(--pill-bg);
+  border:1.5px solid var(--pill-border);
+  border-radius:100px;
+  padding:10px 18px;
+  font-size:14px;font-weight:600;color:var(--text);
+  cursor:pointer;
+  transition:background 0.15s,border-color 0.15s;
+  white-space:nowrap;
+}
+.date-chip:hover{background:var(--pill-hover);border-color:rgba(124,63,43,0.35);}
+.date-chip.selected{background:var(--pill-selected);border-color:#C8F400;color:#0D0D0D;}
+.date-custom{margin-left:36px;margin-top:4px;}
+.date-custom label{font-size:13px;color:var(--text-light);display:block;margin-bottom:8px;}
+.date-custom input[type="date"]{
+  background:var(--pill-bg);
+  border:1.5px solid var(--pill-border);
+  border-radius:12px;
+  padding:13px 18px;
+  font-size:15px;color:var(--text);
+  outline:none;
+  font-family:inherit;
+  transition:border-color 0.15s;
+  cursor:pointer;
+}
+.date-custom input[type="date"]:focus{border-color:var(--brown-soft);}
+.date-or{font-size:12px;color:var(--text-light);margin-left:36px;margin-bottom:12px;}
+
+/* ── SKIP LINK ── */
+.skip-link{
+  font-size:12px;color:var(--text-light);
+  margin-left:36px;margin-top:8px;
+  display:inline-block;cursor:pointer;
+  text-decoration:underline;
+}
+.skip-link:hover{color:var(--brown);}
+
+@media(max-width:600px){
+  .q-label{font-size:1.3rem;}
+  .choices,.text-field,.contact-fields,.num-grid,.btn-ok,.skip-link,.multi-hint{margin-left:0;}
+  .choice{max-width:100%;}
+  .contact-fields input{max-width:100%;}
+  .text-field input{max-width:100%;}
+  .form-stage{align-items:flex-start;padding:24px 20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="form-header">
+  <a href="https://novoscleans.com/" style="text-decoration:none;">
+    <span style="font-size:20px;font-weight:900;letter-spacing:-0.5px;color:#0D0D0D;">NOVO'S</span>
+  </a>
+  <a href="https://novoscleans.com/" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to site
+  </a>
+</header>
+
+<!-- PROGRESS -->
+<div class="progress-bar-wrap">
+  <div class="progress-bar" id="progressBar" style="width:0%"></div>
+</div>
+
+<!-- FORM STAGE -->
+<main class="form-stage">
+  <div class="slide-wrap" id="slideWrap">
+
+    <!-- Q1: SERVICE TYPE -->
+    <div class="question active" id="q1">
+      <div class="q-label"><span class="q-num">1</span> What service do you need?</div>
+      <div class="q-sub">We'll build your quote from here.</div>
+      <div class="choices" id="q1-choices">
+        <div class="choice" data-val="Regular house cleaning" onclick="selectChoice(this,'q1')">
+          <div class="choice-letter">A</div><span class="choice-text">Regular house cleaning</span>
+        </div>
+        <div class="choice" data-val="Deep cleaning" onclick="selectChoice(this,'q1')">
+          <div class="choice-letter">B</div><span class="choice-text">Deep cleaning</span>
+        </div>
+        <div class="choice" data-val="Move in/out cleaning" onclick="selectChoice(this,'q1')">
+          <div class="choice-letter">C</div><span class="choice-text">Move in / move out cleaning</span>
+        </div>
+        <div class="choice" data-val="Organization services" onclick="selectChoice(this,'q1')">
+          <div class="choice-letter">D</div><span class="choice-text">Organization &amp; decluttering</span>
+        </div>
+        <div class="choice" data-val="Eco-friendly cleaning" onclick="selectChoice(this,'q1')">
+          <div class="choice-letter">E</div><span class="choice-text">Eco-friendly cleaning</span>
+        </div>
+        <div class="choice" data-val="External window cleaning" onclick="selectChoice(this,'q1')">
+          <div class="choice-letter">F</div><span class="choice-text">External window cleaning</span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q-BIZ-TYPE: SPACE TYPE (commercial only) -->
+    <div class="question" id="q-biz-type">
+      <div class="q-label"><span class="q-num">2</span> What type of space?</div>
+      <div class="q-sub">Helps us send the right team with the right supplies.</div>
+      <div class="choices" id="q-biz-type-choices">
+        <div class="choice" data-val="Office / Co-working" onclick="selectChoice(this,'q-biz-type')">
+          <div class="choice-letter">A</div><span class="choice-text">Office / Co-working</span>
+        </div>
+        <div class="choice" data-val="Retail store" onclick="selectChoice(this,'q-biz-type')">
+          <div class="choice-letter">B</div><span class="choice-text">Retail store</span>
+        </div>
+        <div class="choice" data-val="Restaurant / Kitchen" onclick="selectChoice(this,'q-biz-type')">
+          <div class="choice-letter">C</div><span class="choice-text">Restaurant / Kitchen</span>
+        </div>
+        <div class="choice" data-val="Medical / Dental" onclick="selectChoice(this,'q-biz-type')">
+          <div class="choice-letter">D</div><span class="choice-text">Medical / Dental</span>
+        </div>
+        <div class="choice" data-val="Warehouse / Industrial" onclick="selectChoice(this,'q-biz-type')">
+          <div class="choice-letter">E</div><span class="choice-text">Warehouse / Industrial</span>
+        </div>
+        <div class="choice" data-val="Other" onclick="selectChoice(this,'q-biz-type')">
+          <div class="choice-letter">F</div><span class="choice-text">Other</span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q-BIZ-SIZE: SQUARE FOOTAGE (commercial only) -->
+    <div class="question" id="q-biz-size">
+      <div class="q-label"><span class="q-num">3</span> Approximate square footage?</div>
+      <div class="q-sub">A rough estimate is fine.</div>
+      <div class="choices" id="q-biz-size-choices">
+        <div class="choice" data-val="Under 1,000 sqft" data-price="200" onclick="selectChoice(this,'q-biz-size')">
+          <div class="choice-letter">A</div><span class="choice-text">Under 1,000 sq ft</span>
+        </div>
+        <div class="choice" data-val="1,000–2,500 sqft" data-price="350" onclick="selectChoice(this,'q-biz-size')">
+          <div class="choice-letter">B</div><span class="choice-text">1,000 – 2,500 sq ft</span>
+        </div>
+        <div class="choice" data-val="2,500–5,000 sqft" data-price="550" onclick="selectChoice(this,'q-biz-size')">
+          <div class="choice-letter">C</div><span class="choice-text">2,500 – 5,000 sq ft</span>
+        </div>
+        <div class="choice" data-val="5,000–10,000 sqft" data-price="850" onclick="selectChoice(this,'q-biz-size')">
+          <div class="choice-letter">D</div><span class="choice-text">5,000 – 10,000 sq ft</span>
+        </div>
+        <div class="choice" data-val="10,000+ sqft" data-price="1200" onclick="selectChoice(this,'q-biz-size')">
+          <div class="choice-letter">E</div><span class="choice-text">10,000+ sq ft</span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q2: BEDROOMS -->
+    <div class="question" id="q2">
+      <div class="q-label"><span class="q-num">2</span> How many bedrooms?</div>
+      <div class="q-sub">Including any guest rooms or offices.</div>
+      <div class="num-grid" id="q2-choices">
+        <div class="num-pill" data-val="1" onclick="selectNum(this,'q2')">1</div>
+        <div class="num-pill" data-val="2" onclick="selectNum(this,'q2')">2</div>
+        <div class="num-pill" data-val="3" onclick="selectNum(this,'q2')">3</div>
+        <div class="num-pill" data-val="4" onclick="selectNum(this,'q2')">4</div>
+        <div class="num-pill" data-val="5" onclick="selectNum(this,'q2')">5+</div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q3: BATHROOMS -->
+    <div class="question" id="q3">
+      <div class="q-label"><span class="q-num">3</span> How many bathrooms?</div>
+      <div class="q-sub">Full and half baths combined.</div>
+      <div class="num-grid" id="q3-choices">
+        <div class="num-pill" data-val="1" onclick="selectNum(this,'q3')">1</div>
+        <div class="num-pill" data-val="2" onclick="selectNum(this,'q3')">2</div>
+        <div class="num-pill" data-val="3" onclick="selectNum(this,'q3')">3</div>
+        <div class="num-pill" data-val="4" onclick="selectNum(this,'q3')">4</div>
+        <div class="num-pill" data-val="5" onclick="selectNum(this,'q3')">5+</div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q4: FREQUENCY -->
+    <div class="question" id="q4">
+      <div class="q-label"><span class="q-num">4</span> How often?</div>
+      <div class="q-sub">Recurring bookings save you money.</div>
+      <div class="choices" id="q4-choices">
+        <div class="choice" data-val="Just this once" data-discount="0" onclick="selectChoice(this,'q4')">
+          <div class="choice-letter">A</div><span class="choice-text">Just this once</span>
+        </div>
+        <div class="choice" data-val="Weekly" data-discount="15" onclick="selectChoice(this,'q4')">
+          <div class="choice-letter">B</div><span class="choice-text">Weekly <span style="font-size:12px;color:var(--green);font-weight:700;">Save 15%</span></span>
+        </div>
+        <div class="choice" data-val="Biweekly" data-discount="10" onclick="selectChoice(this,'q4')">
+          <div class="choice-letter">C</div><span class="choice-text">Biweekly <span style="font-size:12px;color:var(--green);font-weight:700;">Save 10%</span></span>
+        </div>
+        <div class="choice" data-val="Monthly" data-discount="5" onclick="selectChoice(this,'q4')">
+          <div class="choice-letter">D</div><span class="choice-text">Monthly <span style="font-size:12px;color:var(--green);font-weight:700;">Save 5%</span></span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q5: PETS -->
+    <div class="question" id="q5">
+      <div class="q-label"><span class="q-num">5</span> Any inside pets?</div>
+      <div class="q-sub">Helps us bring the right supplies.</div>
+      <div class="choices" id="q5-choices">
+        <div class="choice" data-val="Yes" onclick="selectChoice(this,'q5')">
+          <div class="choice-letter">A</div><span class="choice-text">Yes, I have pets 🐾</span>
+        </div>
+        <div class="choice" data-val="No" onclick="selectChoice(this,'q5')">
+          <div class="choice-letter">B</div><span class="choice-text">No pets</span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+      <span class="skip-link" onclick="skipStep()">Skip</span>
+    </div>
+
+    <!-- Q6: ADD-ONS -->
+    <div class="question" id="q6">
+      <div class="q-label"><span class="q-num">6</span> Any add-ons?</div>
+      <div class="q-sub">Select all that apply.</div>
+      <div class="multi-hint">You can select multiple options</div>
+      <div class="choices" id="q6-choices">
+        <div class="choice multi" data-val="Inside fridge" data-price="25" onclick="toggleChoice(this)">
+          <div class="choice-letter">A</div><span class="choice-text">Inside fridge <span style="font-size:12px;color:var(--brown-light);">+$25</span></span>
+        </div>
+        <div class="choice multi" data-val="Wipe baseboards" data-price="20" onclick="toggleChoice(this)">
+          <div class="choice-letter">B</div><span class="choice-text">Wipe baseboards <span style="font-size:12px;color:var(--brown-light);">+$20</span></span>
+        </div>
+        <div class="choice multi" data-val="Clean dishes" data-price="15" onclick="toggleChoice(this)">
+          <div class="choice-letter">C</div><span class="choice-text">Clean dishes <span style="font-size:12px;color:var(--brown-light);">+$15</span></span>
+        </div>
+        <div class="choice multi" data-val="Inside oven" data-price="25" onclick="toggleChoice(this)">
+          <div class="choice-letter">D</div><span class="choice-text">Inside oven <span style="font-size:12px;color:var(--brown-light);">+$25</span></span>
+        </div>
+        <div class="choice multi" data-val="Inside cabinets" data-price="30" onclick="toggleChoice(this)">
+          <div class="choice-letter">E</div><span class="choice-text">Inside cabinets <span style="font-size:12px;color:var(--brown-light);">+$30</span></span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+      <span class="skip-link" onclick="skipStep()">None, skip</span>
+    </div>
+
+    <!-- Q7: HOME CONDITION -->
+    <div class="question" id="q7">
+      <div class="q-label"><span class="q-num">7</span> Current home condition?</div>
+      <div class="q-sub">Be honest — we've seen it all!</div>
+      <div class="choices" id="q7-choices">
+        <div class="choice" data-val="Pretty clean already" data-extra="0" onclick="selectChoice(this,'q7')">
+          <div class="choice-letter">A</div><span class="choice-text">It's pretty clean already ✨</span>
+        </div>
+        <div class="choice" data-val="A little messy" data-extra="20" onclick="selectChoice(this,'q7')">
+          <div class="choice-letter">B</div><span class="choice-text">A little messy but manageable</span>
+        </div>
+        <div class="choice" data-val="Needs a lot of work" data-extra="40" onclick="selectChoice(this,'q7')">
+          <div class="choice-letter">C</div><span class="choice-text">Could use a lot of work 🧹</span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+      <span class="skip-link" onclick="skipStep()">Skip</span>
+    </div>
+
+    <!-- Q8: HOW DID YOU FIND US -->
+    <div class="question" id="q8">
+      <div class="q-label"><span class="q-num">8</span> How did you find us?</div>
+      <div class="q-sub">Takes 2 seconds and helps us a lot.</div>
+      <div class="choices" id="q8-choices">
+        <div class="choice" data-val="Google search" onclick="selectChoice(this,'q8')">
+          <div class="choice-letter">A</div><span class="choice-text">Google search</span>
+        </div>
+        <div class="choice" data-val="Facebook" onclick="selectChoice(this,'q8')">
+          <div class="choice-letter">B</div><span class="choice-text">Facebook</span>
+        </div>
+        <div class="choice" data-val="TikTok" onclick="selectChoice(this,'q8')">
+          <div class="choice-letter">C</div><span class="choice-text">TikTok</span>
+        </div>
+        <div class="choice" data-val="Friend or family" onclick="selectChoice(this,'q8')">
+          <div class="choice-letter">D</div><span class="choice-text">Friend or family</span>
+        </div>
+        <div class="choice" data-val="Former customer" onclick="selectChoice(this,'q8')">
+          <div class="choice-letter">E</div><span class="choice-text">Former customer</span>
+        </div>
+        <div class="choice" data-val="Other" onclick="selectChoice(this,'q8')">
+          <div class="choice-letter">F</div><span class="choice-text">Other / Flyer</span>
+        </div>
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+      <span class="skip-link" onclick="skipStep()">Skip</span>
+    </div>
+
+    <!-- Q-DATE: PREFERRED DATE -->
+    <div class="question" id="q-date">
+      <div class="q-label"><span class="q-num">9</span> When would you like us?</div>
+      <div class="q-sub">Pick a date that works for you.</div>
+      <div class="date-quickpicks" id="date-quickpicks"></div>
+      <div class="date-or">or pick a specific date</div>
+      <div class="date-custom">
+        <input type="date" id="date-input">
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+      <span class="skip-link" onclick="skipStep()">Skip — I'll confirm later</span>
+    </div>
+
+    <!-- Q9: ADDRESS -->
+    <div class="question" id="q9">
+      <div class="q-label"><span class="q-num">10</span> What's your address?</div>
+      <div class="q-sub">So we can confirm we serve your area.</div>
+      <div class="text-field">
+        <input type="text" id="address-input" placeholder="e.g. 123 Main St" autocomplete="street-address">
+      </div>
+      <div class="text-field" style="margin-top:10px;">
+        <input type="text" id="city-input" placeholder="City (e.g. Romeoville)" autocomplete="address-level2">
+      </div>
+      <button class="btn-ok" onclick="nextStep()">OK <span class="ok-hint">↵</span></button>
+    </div>
+
+    <!-- Q10: CONTACT INFO -->
+    <div class="question" id="q10">
+      <div class="q-label"><span class="q-num">11</span> Almost done — your info</div>
+      <div class="q-sub">We'll send your quote confirmation here.</div>
+      <div class="contact-fields">
+        <input type="text" id="first-name" placeholder="First name *" autocomplete="given-name">
+        <input type="tel" id="phone" placeholder="Phone number *" autocomplete="tel">
+        <input type="email" id="email" placeholder="Email (optional)" autocomplete="email">
+      </div>
+      <div id="q10-warn" style="display:none;background:rgba(124,63,43,0.08);border:1.5px solid rgba(124,63,43,0.2);border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:13px;color:var(--brown);">
+        ⚠️ You skipped your address and preferred date — we may not be able to schedule you. <a href="javascript:void(0)" onclick="goToStep('q-date')" style="color:var(--brown);font-weight:700;">Add a date</a> or <a href="javascript:void(0)" onclick="goToStep('q9')" style="color:var(--brown);font-weight:700;">Add an address</a>, or tap below to continue anyway.
+      </div>
+      <button class="btn-ok" onclick="submitForm()" style="background:var(--green);">
+        See My Quote →
+      </button>
+    </div>
+
+    <!-- QUOTE SCREEN -->
+    <div class="question" id="q-quote">
+      <div class="quote-screen">
+        <div class="quote-badge">✓ Your personalized quote is ready</div>
+        <h2 id="quote-headline">Here's your price</h2>
+        <p class="quote-sub" id="quote-sub">Based on your home details</p>
+        <div class="price-card">
+          <div class="price-service-label" id="quote-service-label">Standard Cleaning</div>
+          <div class="price-main">
+            <div class="price-amount" id="quote-price">$149</div>
+            <div class="price-label" id="quote-freq-label">one-time clean</div>
+          </div>
+          <div class="price-meta" id="quote-home-meta">3 bed · 2 bath</div>
+          <div id="savings-badge" class="price-savings" style="display:none;">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span id="savings-text"></span>
+          </div>
+          <div class="price-breakdown" id="price-breakdown"></div>
+          <div class="breakdown-total" id="breakdown-total" style="display:none;">
+            <span>Your total</span><span id="breakdown-total-val"></span>
+          </div>
+        </div>
+        <!-- What's included -->
+        <div class="includes-section" id="includes-section">
+          <div class="includes-title">What's included</div>
+          <div class="includes-grid" id="includes-grid"></div>
+        </div>
+        <!-- Deep clean photo note -->
+        <div id="deep-clean-note" style="display:none;background:rgba(124,63,43,0.07);border:1.5px solid rgba(124,63,43,0.15);border-radius:16px;padding:16px 20px;margin-bottom:20px;text-align:left;">
+          <div style="font-size:13px;font-weight:700;color:var(--brown);margin-bottom:6px;">📸 Get an exact price faster</div>
+          <div style="font-size:13px;color:var(--text-light);line-height:1.6;">Text a few photos of your home to <strong style="color:var(--brown);">(708) 378-7367</strong> and we'll confirm your exact price before arrival. No surprises.</div>
+        </div>
+        <button class="btn-accept" onclick="acceptQuote()">Accept &amp; Book My Clean →</button>
+        <br>
+        <button class="btn-edit" onclick="goToStep(getFlow()[0])">← Edit my answers</button>
+        <p style="font-size:11px;color:var(--text-light);margin-top:16px;">No charge now. We'll confirm details by phone before anything is scheduled.</p>
+      </div>
+    </div>
+
+    <!-- CONFIRM SCREEN -->
+    <div class="question" id="q-confirm">
+      <div class="confirm-screen">
+        <div class="confirm-icon">✅</div>
+        <h2>You're all set, <span id="confirm-name">friend</span>!</h2>
+        <p>Your booking request is in. We'll reach out shortly to confirm your appointment.</p>
+        <div class="confirm-detail" id="confirm-detail"></div>
+        <p style="font-size:13px;color:var(--text-light);">Questions? Email us at <strong style="color:var(--brown);">hello@novoscleans.com</strong></p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="form-footer">
+  <div class="nav-arrows">
+    <button class="nav-arrow" id="btnBack" onclick="prevStep()" disabled aria-label="Previous">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"/></svg>
+    </button>
+    <button class="nav-arrow" id="btnNext" onclick="nextStep()" aria-label="Next">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+  <span class="step-counter" id="stepCounter">1 / 11</span>
+  <span class="powered">Novo's Cleaning &mdash; We Make It Feel Brand New</span>
+</footer>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────
+// TODO: connect backend (GHL webhook or Supabase)
+const GHL_WEBHOOK = ''; // paste your GHL webhook URL here when ready
+
+let currentQId = 'q1';
+let savedLeadId = null;
+
+// Answers object
+const A = {
+  service: null,
+  bedrooms: null, bathrooms: null,
+  bizType: null, bizSize: null, bizSizePrice: 0,
+  frequency: null, frequencyDiscount: 0,
+  pets: null, addons: [],
+  condition: null, conditionExtra: 0,
+  referral: null, preferredDate: null,
+  address: '', city: '', firstName: '', phone: '', email: ''
+};
+
+// ── FLOWS ────────────────────────────────────────────────────
+const RESIDENTIAL_FLOW = ['q1','q2','q3','q4','q-date','q9','q10','q-quote','q-confirm'];
+const COMMERCIAL_FLOW  = ['q1','q-biz-type','q-biz-size','q4','q-date','q9','q10','q-quote','q-confirm'];
+
+function getFlow() {
+  return A.service === 'Commercial / Industrial cleaning' ? COMMERCIAL_FLOW : RESIDENTIAL_FLOW;
+}
+function getNextId() {
+  const f = getFlow(), i = f.indexOf(currentQId);
+  return i >= 0 && i < f.length - 1 ? f[i + 1] : null;
+}
+function getPrevId() {
+  const f = getFlow(), i = f.indexOf(currentQId);
+  return i > 0 ? f[i - 1] : null;
+}
+function userStepNum() {
+  const user = getFlow().filter(id => !['q-quote','q-confirm'].includes(id));
+  return user.indexOf(currentQId) + 1;
+}
+function totalUserSteps() {
+  return getFlow().filter(id => !['q-quote','q-confirm'].includes(id)).length;
+}
+
+// ── PRICING ─────────────────────────────────────────────────
+const BASE_PRICE = { '1':135, '2':164, '3':194, '4':234, '5':274 };
+const BATH_EXTRA  = { '1':0, '2':20, '3':40, '4':60 }; // silent — not shown as line item
+const SERVICE_EXTRA = {
+  'Regular house cleaning':0, 'Deep cleaning':60,
+  'Airbnb cleaning':0, 'Move in/out cleaning':80
+};
+const ADDON_PRICES = {
+  'Inside fridge':25,'Wipe baseboards':20,
+  'Clean dishes':15,'Inside oven':25,'Inside cabinets':30
+};
+
+function isRangeService() {
+  return ['Deep cleaning','Move in/out cleaning','Commercial / Industrial cleaning'].includes(A.service);
+}
+function isCommercial() { return A.service === 'Commercial / Industrial cleaning'; }
+
+function calcPrice() {
+  let base;
+  if (isCommercial()) {
+    base = A.bizSizePrice || 350;
+  } else {
+    base = BASE_PRICE[A.bedrooms || '2'] || 149;
+    base += BATH_EXTRA[A.bathrooms || '1'] || 0;
+    base += SERVICE_EXTRA[A.service] || 0;
+    if (A.pets === 'Yes') base += 15;
+    A.addons.forEach(a => { base += ADDON_PRICES[a] || 0; });
+    base += A.conditionExtra || 0;
+  }
+  const disc = A.frequencyDiscount || 0;
+  const discAmt = Math.round(base * disc / 100);
+  const total = base - discAmt;
+  return { base, disc, discAmt, total };
+}
+
+// ── NAVIGATION ──────────────────────────────────────────────
+function updateProgress() {
+  const num = userStepNum(), tot = totalUserSteps();
+  const pct = tot > 0 ? ((num - 1) / tot) * 100 : 0;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('stepCounter').textContent = num + ' / ' + tot;
+  document.getElementById('btnBack').disabled = getFlow().indexOf(currentQId) <= 0;
+}
+
+function transition(fromId, toId, direction) {
+  const from = document.getElementById(fromId);
+  if (from) {
+    from.style.transition = 'opacity 0.28s ease, transform 0.28s ease';
+    from.style.opacity = '0';
+    from.style.transform = direction === 'forward' ? 'translateY(-30px)' : 'translateY(30px)';
+    from.style.pointerEvents = 'none';
+  }
+  setTimeout(() => {
+    if (from) { from.classList.remove('active'); from.style = ''; }
+    const to = document.getElementById(toId);
+    if (to) {
+      to.style.opacity = '0';
+      to.style.transform = direction === 'forward' ? 'translateY(30px)' : 'translateY(-30px)';
+      to.classList.add('active');
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        to.style.transition = 'opacity 0.32s ease, transform 0.32s ease';
+        to.style.opacity = '1';
+        to.style.transform = 'translateY(0)';
+        const inp = to.querySelector('input');
+        if (inp) inp.focus();
+      }));
+      setTimeout(() => { to.style = ''; }, 400);
+    }
+  }, 280);
+}
+
+function goToStep(id) {
+  const from = currentQId;
+  currentQId = id;
+  updateProgress();
+  transition(from, id, 'forward');
+}
+
+function nextStep() {
+  if (!validateStep()) return;
+  collectStep();
+  const toId = getNextId();
+  if (!toId) return;
+  const fromId = currentQId;
+  currentQId = toId;
+  updateProgress();
+  transition(fromId, toId, 'forward');
+  if (toId === 'q-quote') renderQuote();
+}
+
+function prevStep() {
+  const toId = getPrevId();
+  if (!toId) return;
+  const fromId = currentQId;
+  currentQId = toId;
+  updateProgress();
+  transition(fromId, toId, 'back');
+}
+
+function skipStep() {
+  collectStep();
+  const toId = getNextId();
+  if (!toId) return;
+  const fromId = currentQId;
+  currentQId = toId;
+  updateProgress();
+  transition(fromId, toId, 'forward');
+  if (toId === 'q-quote') renderQuote();
+}
+
+// ── VALIDATION ──────────────────────────────────────────────
+function validateStep() {
+  if (currentQId === 'q1' && !A.service)   { shake('q1'); return false; }
+  if (currentQId === 'q2' && !A.bedrooms)  { shake('q2'); return false; }
+  if (currentQId === 'q3' && !A.bathrooms) { shake('q3'); return false; }
+  if (currentQId === 'q-biz-type' && !A.bizType) { shake('q-biz-type'); return false; }
+  if (currentQId === 'q-biz-size' && !A.bizSize) { shake('q-biz-size'); return false; }
+  if (currentQId === 'q4' && !A.frequency) { shake('q4'); return false; }
+  if (currentQId === 'q9') {
+    const addr = document.getElementById('address-input').value.trim();
+    const city = document.getElementById('city-input').value.trim();
+    if (!addr || !city) { shake('q9'); return false; }
+  }
+  if (currentQId === 'q10') {
+    const fn = document.getElementById('first-name').value.trim();
+    const ph = document.getElementById('phone').value.trim();
+    if (!fn || !ph) { shake('q10'); return false; }
+    // Warn (but don't block) if both address and date are missing
+    if (!A.address && !A.preferredDate) {
+      const warn = document.getElementById('q10-warn');
+      if (warn && !warn.dataset.shown) {
+        warn.style.display = 'block';
+        warn.dataset.shown = '1';
+        return false; // pause once; second submit goes through
+      }
+    }
+  }
+  return true;
+}
+
+function shake(qid) {
+  const el = document.getElementById(qid);
+  if (!el) return;
+  el.style.transform = 'translateX(-8px)';
+  setTimeout(() => { el.style.transform = 'translateX(8px)'; }, 80);
+  setTimeout(() => { el.style.transform = 'translateX(-4px)'; }, 160);
+  setTimeout(() => { el.style.transform = 'translateX(0)'; }, 240);
+}
+
+// ── COLLECT ─────────────────────────────────────────────────
+function collectStep() {
+  if (currentQId === 'q-date') {
+    const v = document.getElementById('date-input').value;
+    if (v) A.preferredDate = v;
+  }
+  if (currentQId === 'q9') {
+    A.address = document.getElementById('address-input').value.trim();
+    A.city = document.getElementById('city-input').value.trim();
+  }
+  if (currentQId === 'q10') {
+    A.firstName = document.getElementById('first-name').value.trim();
+    A.phone     = document.getElementById('phone').value.trim();
+    A.email     = document.getElementById('email').value.trim();
+  }
+}
+
+// ── CHOICE HANDLERS ─────────────────────────────────────────
+function selectChoice(el, qid) {
+  document.querySelectorAll('#' + qid + '-choices .choice').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const val = el.dataset.val;
+  if (qid === 'q1') {
+    const prevService = A.service;
+    A.service = val;
+    // If switching between commercial and residential, wipe stale answers
+    const wasCommercial = prevService === 'Commercial / Industrial cleaning';
+    const nowCommercial = val === 'Commercial / Industrial cleaning';
+    if (wasCommercial !== nowCommercial) {
+      A.bedrooms = null; A.bathrooms = null; A.pets = null; A.addons = [];
+      A.condition = null; A.conditionExtra = 0;
+      A.bizType = null; A.bizSize = null; A.bizSizePrice = 0;
+    }
+  }
+  if (qid === 'q-biz-type') A.bizType = val;
+  if (qid === 'q-biz-size') { A.bizSize = val; A.bizSizePrice = parseInt(el.dataset.price || '350'); }
+  if (qid === 'q4')  { A.frequency = val; A.frequencyDiscount = parseInt(el.dataset.discount || '0'); }
+  if (qid === 'q5')  A.pets = val;
+  if (qid === 'q7')  { A.condition = val; A.conditionExtra = parseInt(el.dataset.extra || '0'); }
+  if (qid === 'q8')  A.referral = val;
+  setTimeout(() => nextStep(), 320);
+}
+
+function selectNum(el, qid) {
+  document.querySelectorAll('#' + qid + '-choices .num-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  if (qid === 'q2') A.bedrooms = el.dataset.val;
+  if (qid === 'q3') A.bathrooms = el.dataset.val;
+  setTimeout(() => nextStep(), 320);
+}
+
+function toggleChoice(el) {
+  el.classList.toggle('selected');
+  const val = el.dataset.val;
+  if (el.classList.contains('selected')) { if (!A.addons.includes(val)) A.addons.push(val); }
+  else A.addons = A.addons.filter(a => a !== val);
+}
+
+// ── SUBMIT ──────────────────────────────────────────────────
+function submitForm() {
+  if (!validateStep()) return;
+  collectStep();
+  const fromId = currentQId;
+  currentQId = 'q-quote';
+  updateProgress();
+  transition(fromId, 'q-quote', 'forward');
+  renderQuote();
+  saveLead();
+}
+
+async function saveLead() {
+  // TODO: send to GHL webhook or backend when ready
+  if (!GHL_WEBHOOK) return;
+  try {
+    await fetch(GHL_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        service: A.service,
+        bedrooms: A.bedrooms, bathrooms: A.bathrooms,
+        frequency: A.frequency,
+        address: A.address, city: A.city,
+        first_name: A.firstName, phone: A.phone, email: A.email,
+        preferred_date: A.preferredDate || null,
+        quote_price: calcPrice().total,
+      })
+    });
+  } catch(e) { console.warn('Lead send failed:', e); }
+}
+
+// ── RENDER QUOTE ────────────────────────────────────────────
+const SERVICE_INCLUDES = {
+  'Regular house cleaning': ['Dusting all surfaces','Vacuum & mop floors','Kitchen surfaces & sink','Bathrooms scrubbed','Trash emptied','High-touch areas wiped'],
+  'Deep cleaning': ['Everything in standard','Inside oven & fridge','Inside cabinets','Baseboards & window sills','Behind/under furniture','Grout scrubbing'],
+  'Airbnb cleaning': ['Full linen change','Dusting & vacuuming','Kitchen & bathrooms','Trash removed','Guest-ready reset','High-touch sanitize'],
+  'Move in/out cleaning': ['Top-to-bottom clean','Inside all appliances','Inside cabinets & drawers','Baseboards & window sills','Bathrooms deep scrub','All floors cleaned'],
+  'Commercial / Industrial cleaning': ['Floors vacuumed & mopped','Surfaces dusted & wiped','Bathrooms sanitized','Trash & recycling','Reception & common areas','Tailored to your space'],
+};
+
+function renderQuote() {
+  const { base, disc, discAmt, total } = calcPrice();
+  const isRange = isRangeService();
+  const rangeLow = total;
+  const rangeHigh = Math.ceil((total * 1.35) / 10) * 10;
+
+  document.getElementById('quote-headline').textContent = 'Here\'s your quote, ' + (A.firstName || 'friend') + '!';
+  document.getElementById('quote-sub').textContent = A.address || 'Based on your answers';
+
+  // Service label + home meta
+  document.getElementById('quote-service-label').textContent = A.service || 'Cleaning Service';
+  if (!isCommercial()) {
+    const baths = A.bathrooms || '1';
+    const beds  = A.bedrooms  || '2';
+    let meta = beds + ' bed · ' + baths + ' bath';
+    if (A.frequency && A.frequency !== 'Just this once') meta += ' · ' + A.frequency;
+    document.getElementById('quote-home-meta').textContent = meta;
+  } else {
+    document.getElementById('quote-home-meta').textContent = A.bizType || 'Commercial space';
+  }
+
+  const freqLabel = !A.frequency || A.frequency === 'Just this once' ? 'one-time clean'
+    : 'per ' + A.frequency.toLowerCase().replace('biweekly','2 weeks').replace('weekly','week').replace('monthly','month');
+
+  document.getElementById('quote-price').textContent = isRange ? '$' + rangeLow + ' – $' + rangeHigh : '$' + total;
+  document.getElementById('quote-freq-label').textContent = freqLabel;
+
+  const savBadge = document.getElementById('savings-badge');
+  if (disc > 0) {
+    savBadge.style.display = 'inline-flex';
+    document.getElementById('savings-text').textContent = 'Saving $' + discAmt + ' every clean with ' + A.frequency.toLowerCase() + ' plan';
+  } else { savBadge.style.display = 'none'; }
+
+  document.getElementById('deep-clean-note').style.display = isRange ? 'block' : 'none';
+
+  // Receipt breakdown
+  const bd = document.getElementById('price-breakdown');
+  const totalEl = document.getElementById('breakdown-total');
+  const totalValEl = document.getElementById('breakdown-total-val');
+  let rows = '';
+  let hasLines = false;
+
+  if (isCommercial()) {
+    rows += row(A.bizSize || 'Space size', '$' + (A.bizSizePrice || 350));
+    hasLines = true;
+  } else {
+    const baseAmt = (BASE_PRICE[A.bedrooms||'2'] || 149) + (BATH_EXTRA[A.bathrooms||'1'] || 0);
+    rows += row((A.bedrooms||'2') + ' bed, ' + (A.bathrooms||'1') + ' bath', '$' + baseAmt);
+    if (SERVICE_EXTRA[A.service]) { rows += row(A.service, '+$' + SERVICE_EXTRA[A.service]); hasLines = true; }
+    if (A.pets === 'Yes') { rows += row('Pet treatment', '+$15'); hasLines = true; }
+    A.addons.forEach(a => { rows += row(a, '+$' + ADDON_PRICES[a]); hasLines = true; });
+    if (A.conditionExtra > 0) { rows += row('Home condition surcharge', '+$' + A.conditionExtra); hasLines = true; }
+  }
+  if (discAmt > 0) { rows += row('🎉 ' + A.frequency + ' plan discount', '−$' + discAmt, true); hasLines = true; }
+  if (isRange) rows += row('Final price confirmed after photos', '', false, true);
+
+  bd.innerHTML = rows;
+
+  // Show total line only when there's more than one line item
+  if (hasLines && !isRange) {
+    totalEl.style.display = 'flex';
+    totalValEl.textContent = '$' + total;
+  } else {
+    totalEl.style.display = 'none';
+  }
+
+  // What's included
+  const includes = SERVICE_INCLUDES[A.service] || SERVICE_INCLUDES['Regular house cleaning'];
+  document.getElementById('includes-grid').innerHTML = includes.map(i =>
+    `<div class="include-chip"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>${i}</div>`
+  ).join('');
+}
+
+function row(label, val, isDiscount, isNote) {
+  if (isNote) return `<div class="breakdown-row" style="font-style:italic;opacity:0.7;font-size:12px;"><span class="label">${label}</span></div>`;
+  return `<div class="breakdown-row${isDiscount?' discount':''}"><span class="label">${label}</span><span class="val">${val}</span></div>`;
+}
+
+// ── ACCEPT ──────────────────────────────────────────────────
+async function acceptQuote() {
+  // TODO: trigger booking confirmation (GHL workflow, email, SMS, etc.)
+  saveLead(); // fire-and-forget to webhook if configured
+
+  const { total } = calcPrice();
+  const isRange = isRangeService();
+  const rangeHigh = Math.ceil((total * 1.35) / 10) * 10;
+  const quoteStr = isRange ? '$' + total + ' – $' + rangeHigh : '$' + total;
+
+  const fromId = currentQId;
+  currentQId = 'q-confirm';
+  transition(fromId, 'q-confirm', 'forward');
+  document.getElementById('confirm-name').textContent = A.firstName || 'friend';
+
+  const detail = document.getElementById('confirm-detail');
+  detail.innerHTML = `
+    <div class="confirm-detail-row"><span class="dl">Service</span><span class="dv">${A.service}</span></div>
+    ${A.bizType ? `<div class="confirm-detail-row"><span class="dl">Space Type</span><span class="dv">${A.bizType}</span></div>` : ''}
+    ${A.bizSize  ? `<div class="confirm-detail-row"><span class="dl">Size</span><span class="dv">${A.bizSize}</span></div>` : ''}
+    ${A.frequency ? `<div class="confirm-detail-row"><span class="dl">Frequency</span><span class="dv">${A.frequency}</span></div>` : ''}
+    <div class="confirm-detail-row"><span class="dl">Quote</span><span class="dv">${quoteStr}</span></div>
+    ${A.preferredDate ? `<div class="confirm-detail-row"><span class="dl">Preferred Date</span><span class="dv">${new Date(A.preferredDate+'T12:00:00').toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'})}</span></div>` : ''}
+    ${A.address ? `<div class="confirm-detail-row"><span class="dl">Address</span><span class="dv">${A.address}</span></div>` : ''}
+    <div class="confirm-detail-row"><span class="dl">Phone</span><span class="dv">${A.phone}</span></div>
+  `;
+
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('btnBack').disabled = true;
+  document.getElementById('btnNext').disabled = true;
+}
+
+// ── DATE QUICK PICKS ────────────────────────────────────────
+function buildDateChips() {
+  const container = document.getElementById('date-quickpicks');
+  const today = new Date();
+  const minDate = new Date(today);
+  minDate.setDate(minDate.getDate() + 1);
+  document.getElementById('date-input').min = minDate.toISOString().split('T')[0];
+  const chips = [];
+  for (let i = 1; i <= 7; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() + i);
+    chips.push({
+      label: i === 1 ? 'Tomorrow' : d.toLocaleDateString('en-US',{weekday:'long',month:'short',day:'numeric'}),
+      value: d.toISOString().split('T')[0]
+    });
+  }
+  container.innerHTML = chips.map(c =>
+    `<div class="date-chip" data-val="${c.value}" onclick="selectDateChip(this)">${c.label}</div>`
+  ).join('');
+}
+
+function selectDateChip(el) {
+  document.querySelectorAll('.date-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  A.preferredDate = el.dataset.val;
+  document.getElementById('date-input').value = el.dataset.val;
+}
+
+document.getElementById('date-input').addEventListener('change', function() {
+  A.preferredDate = this.value;
+  document.querySelectorAll('.date-chip').forEach(c => c.classList.toggle('selected', c.dataset.val === this.value));
+});
+
+buildDateChips();
+
+// ── KEYBOARD SHORTCUTS ──────────────────────────────────────
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    if (currentQId === 'q10') { submitForm(); return; }
+    if (!['q-quote','q-confirm','q6'].includes(currentQId)) nextStep();
+  }
+  const letters = ['a','b','c','d','e','f'];
+  const idx = letters.indexOf(e.key.toLowerCase());
+  if (idx >= 0) {
+    const choices = document.querySelectorAll('#' + currentQId + '-choices .choice');
+    if (choices[idx]) choices[idx].click();
+  }
+});
+
+// Init
+updateProgress();
+</script>
+</body>
+</html>
