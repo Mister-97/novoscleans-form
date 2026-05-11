@@ -688,7 +688,7 @@ document.addEventListener('keydown',(e)=>{
 
 
 // ── BOOKING KOALA REDIRECT ───────────────────────────────────
-const BOOKING_KOALA_URL = 'https://app.bookingkoala.com/booknow/YOUR_LINK_HERE';
+const BOOKING_KOALA_URL = 'https://novos.bookingkoala.com/booknow';
 
 function redirectToBookingKoala() {
   // Show redirect screen
@@ -707,13 +707,10 @@ function redirectToBookingKoala() {
     city:        A.cityZip,
     notes: A.service + ' | ' + (A.bedrooms||'') + ' bed / ' + (A.bathrooms||'') + ' bath | ' + A.howSoon,
   });
-  const url = BOOKING_KOALA_URL !== 'https://app.bookingkoala.com/booknow/YOUR_LINK_HERE'
-    ? BOOKING_KOALA_URL + '?' + params.toString()
-    : null;
+  const url = BOOKING_KOALA_URL + '?' + params.toString();
 
   setTimeout(() => {
-    if (url) window.location.href = url;
-    // else stay on redirect screen until URL is configured
+    window.location.href = url;
   }, 2500);
 }
 
