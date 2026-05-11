@@ -429,14 +429,21 @@ body{background:var(--lime);color:var(--text);display:flex;flex-direction:column
       </div>
     </div>
 
-    <!-- EMBED SCREEN -->
+    <!-- REDIRECT SCREEN -->
     <div class="question" id="q-redirect">
-      <div style="width:100%;">
-        <div style="text-align:center;margin-bottom:20px;">
-          <div style="font-size:1.3rem;font-weight:800;color:#0D0D0D;margin-bottom:6px;">Almost done, <span id="embed-name">friend</span>!</div>
-          <p style="font-size:14px;color:var(--text-light);">Pick your date and time below to lock it in.</p>
+      <div style="max-width:460px;margin:0 auto;text-align:center;padding:40px 0;">
+        <div style="margin-bottom:28px;">
+          <img src="images/gecko-peeking.png" alt="" style="height:130px;width:auto;filter:drop-shadow(0 8px 24px rgba(0,0,0,0.12));" draggable="false">
         </div>
-        <iframe id="bk-iframe" src="" style="border:none;height:1000px;" width="100%" scrolling="no"></iframe>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;">
+          <div class="redirect-spinner"></div>
+          <span style="font-size:1.4rem;font-weight:800;color:#0D0D0D;">Redirecting...</span>
+        </div>
+        <p style="font-size:14px;color:var(--text-light);margin-bottom:32px;">Taking you to complete your booking.</p>
+        <div style="background:rgba(13,13,13,0.07);border:1.5px solid rgba(13,13,13,0.12);border-radius:16px;padding:16px 20px;font-size:13px;color:var(--black);line-height:1.7;text-align:left;">
+          <strong style="display:block;margin-bottom:4px;">A note on payment</strong>
+          We may ask to put a card on file to secure your booking — but we will <strong>not</strong> charge you until after the job is complete.
+        </div>
       </div>
     </div>
 
@@ -680,7 +687,7 @@ document.addEventListener('keydown',(e)=>{
 });
 
 
-// ── BOOKING KOALA EMBED ───────────────────────────────────────
+// ── BOOKING KOALA REDIRECT ───────────────────────────────────
 const BOOKING_KOALA_URL = 'https://novos.bookingkoala.com/booknow';
 
 function redirectToBookingKoala() {
@@ -691,17 +698,17 @@ function redirectToBookingKoala() {
   document.getElementById('btnNext').disabled = true;
   transition(fromId, 'q-redirect', 'forward');
 
-  document.getElementById('embed-name').textContent = A.firstName || 'friend';
-
   const params = new URLSearchParams({
-    embed:       'true',
-    first_name:  A.firstName,
-    phone:       A.phone,
-    address:     A.address,
-    city:        A.cityZip,
+    first_name: A.firstName,
+    phone:      A.phone,
+    address:    A.address,
+    city:       A.cityZip,
     notes: A.service + ' | ' + (A.bedrooms||'') + ' bed / ' + (A.bathrooms||'') + ' bath | ' + A.howSoon,
   });
-  document.getElementById('bk-iframe').src = BOOKING_KOALA_URL + '?' + params.toString();
+
+  setTimeout(() => {
+    window.location.href = BOOKING_KOALA_URL + '?' + params.toString();
+  }, 2500);
 }
 
 // ── LOCALSTORAGE ─────────────────────────────────────────────
@@ -763,6 +770,5 @@ function loadFromStorage() {
 loadFromStorage();
 updateProgress();
 </script>
-<script src="https://novos.bookingkoala.com/resources/embed.js" defer></script>
 </body>
 </html>
