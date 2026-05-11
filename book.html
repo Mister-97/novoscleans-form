@@ -279,8 +279,9 @@ body{background:var(--lime);color:var(--text);display:flex;flex-direction:column
 }
 .nav-arrow:hover:not(:disabled){background:rgba(13,13,13,0.16);}
 .nav-arrow:disabled{opacity:0.25;cursor:not-allowed;}
-.step-counter{font-size:12px;color:var(--text-light);}
-.powered{font-size:11px;color:var(--text-light);}
+.step-counter{font-size:12px;color:var(--text-light);white-space:nowrap;}
+.powered{font-size:11px;color:var(--text-light);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px;}
+@media(max-width:480px){.powered{display:none;}}
 
 @media(max-width:600px){
   .q-label{font-size:1.25rem;}
