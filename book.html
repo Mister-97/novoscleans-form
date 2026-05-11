@@ -84,11 +84,6 @@ body{background:var(--lime);color:var(--text);display:flex;flex-direction:column
 }
 .choice.selected .choice-letter{background:var(--black);color:#C8F400;border-color:var(--black);}
 .choice-text{font-size:15px;font-weight:500;color:var(--text);}
-.choice-badge{
-  margin-left:auto;font-size:11px;font-weight:700;
-  background:var(--black);color:var(--lime);
-  border-radius:100px;padding:3px 10px;white-space:nowrap;flex-shrink:0;
-}
 
 .num-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-left:36px;}
 .num-pill{
@@ -357,7 +352,6 @@ body{background:var(--lime);color:var(--text);display:flex;flex-direction:column
         <div class="choice" data-val="This week" data-score="hot" onclick="selectChoice(this,'q-soon')">
           <div class="choice-letter">A</div>
           <span class="choice-text">This week</span>
-          <span class="choice-badge">Priority</span>
         </div>
         <div class="choice" data-val="Within 2 weeks" data-score="warm" onclick="selectChoice(this,'q-soon')">
           <div class="choice-letter">B</div>
@@ -453,7 +447,7 @@ const A = {
   recentCleaning:null, howSoon:null, leadScore:null
 };
 
-const FLOW = ['q-contact','q1','q2','q3','q-recent','q-soon','q-quote','q-confirm'];
+const FLOW = ['q-contact','q1','q2','q3','q-recent','q-soon'];
 
 function getNextId(){ const i=FLOW.indexOf(currentQId); return i>=0&&i<FLOW.length-1?FLOW[i+1]:null; }
 function getPrevId(){ const i=FLOW.indexOf(currentQId); return i>0?FLOW[i-1]:null; }
@@ -508,10 +502,14 @@ function goToStep(id){ const f=currentQId; currentQId=id; updateProgress(); tran
 function nextStep(){
   if(!validateStep()) return;
   collectStep();
-  const toId=getNextId(); if(!toId) return;
+  const toId=getNextId();
+  if(!toId){
+    saveLead('');
+    redirectToBookingKoala();
+    return;
+  }
   const fromId=currentQId; currentQId=toId;
   updateProgress(); transition(fromId,toId,'forward');
-  if(toId==='q-quote') renderQuote();
 }
 
 function prevStep(){
@@ -551,6 +549,7 @@ function collectStep(){
     A.address=document.getElementById('address').value.trim();
     A.cityZip=document.getElementById('city-zip').value.trim();
   }
+  saveToStorage();
 }
 
 function selectChoice(el,qid){
@@ -560,6 +559,7 @@ function selectChoice(el,qid){
   if(qid==='q1') A.service=val;
   if(qid==='q-recent') A.recentCleaning=val;
   if(qid==='q-soon'){A.howSoon=val;A.leadScore=el.dataset.score;}
+  saveToStorage();
   setTimeout(()=>nextStep(),300);
 }
 
@@ -568,6 +568,7 @@ function selectNum(el,qid){
   el.classList.add('selected');
   if(qid==='q2') A.bedrooms=el.dataset.val;
   if(qid==='q3') A.bathrooms=el.dataset.val;
+  saveToStorage();
   setTimeout(()=>nextStep(),300);
 }
 
@@ -658,6 +659,79 @@ document.addEventListener('keydown',(e)=>{
   }
 });
 
+
+// ── BOOKING KOALA REDIRECT ───────────────────────────────────
+const BOOKING_KOALA_URL = 'https://app.bookingkoala.com/booknow/YOUR_LINK_HERE';
+
+function redirectToBookingKoala() {
+  const params = new URLSearchParams({
+    first_name: A.firstName,
+    phone:       A.phone,
+    address:     A.address,
+    city:        A.cityZip,
+    // service, bedrooms, bathrooms passed as notes/custom fields
+    notes: A.service + ' | ' + A.bedrooms + ' bed / ' + A.bathrooms + ' bath | ' + A.howSoon,
+  });
+  window.location.href = BOOKING_KOALA_URL + '?' + params.toString();
+}
+
+// ── LOCALSTORAGE ─────────────────────────────────────────────
+const LS_KEY = 'novos_lead';
+
+function saveToStorage() {
+  localStorage.setItem(LS_KEY, JSON.stringify({
+    firstName: A.firstName, phone: A.phone,
+    address: A.address, cityZip: A.cityZip,
+    service: A.service, bedrooms: A.bedrooms,
+    bathrooms: A.bathrooms, recentCleaning: A.recentCleaning, howSoon: A.howSoon
+  }));
+}
+
+function loadFromStorage() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    if (saved.firstName) {
+      A.firstName = saved.firstName; A.phone = saved.phone;
+      A.address = saved.address; A.cityZip = saved.cityZip;
+      A.service = saved.service; A.bedrooms = saved.bedrooms;
+      A.bathrooms = saved.bathrooms; A.recentCleaning = saved.recentCleaning;
+      A.howSoon = saved.howSoon;
+      // Pre-fill contact inputs
+      if (saved.firstName)  document.getElementById('first-name').value = saved.firstName;
+      if (saved.phone)      document.getElementById('phone').value = saved.phone;
+      if (saved.address)    document.getElementById('address').value = saved.address;
+      if (saved.cityZip)    document.getElementById('city-zip').value = saved.cityZip;
+      // Re-select pills
+      if (saved.service) {
+        document.querySelectorAll('#q1-choices .choice').forEach(c => {
+          if (c.dataset.val === saved.service) c.classList.add('selected');
+        });
+      }
+      if (saved.bedrooms) {
+        document.querySelectorAll('#q2-choices .num-pill').forEach(p => {
+          if (p.dataset.val === saved.bedrooms) p.classList.add('selected');
+        });
+      }
+      if (saved.bathrooms) {
+        document.querySelectorAll('#q3-choices .num-pill').forEach(p => {
+          if (p.dataset.val === saved.bathrooms) p.classList.add('selected');
+        });
+      }
+      if (saved.recentCleaning) {
+        document.querySelectorAll('#q-recent-choices .choice').forEach(c => {
+          if (c.dataset.val === saved.recentCleaning) c.classList.add('selected');
+        });
+      }
+      if (saved.howSoon) {
+        document.querySelectorAll('#q-soon-choices .choice').forEach(c => {
+          if (c.dataset.val === saved.howSoon) c.classList.add('selected');
+        });
+      }
+    }
+  } catch(e) {}
+}
+
+loadFromStorage();
 updateProgress();
 </script>
 </body>
