@@ -698,12 +698,18 @@ function redirectToBookingKoala() {
   document.getElementById('btnNext').disabled = true;
   transition(fromId, 'q-redirect', 'forward');
 
+  // Split "City, Zip" into separate fields
+  const cityZipParts = A.cityZip.split(',').map(s => s.trim());
+  const city = cityZipParts[0] || A.cityZip;
+  const zip  = cityZipParts[1] || '';
+
   const params = new URLSearchParams({
-    first_name: A.firstName,
-    phone:      A.phone,
-    address:    A.address,
-    city:       A.cityZip,
-    notes: A.service + ' | ' + (A.bedrooms||'') + ' bed / ' + (A.bathrooms||'') + ' bath | ' + A.howSoon,
+    fname:   A.firstName,
+    phone:   A.phone,
+    address: A.address,
+    city:    city,
+    zip:     zip,
+    notes:   A.service + ' | ' + (A.bedrooms||'') + ' bed / ' + (A.bathrooms||'') + ' bath | ' + A.howSoon,
   });
 
   setTimeout(() => {
