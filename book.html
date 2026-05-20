@@ -527,12 +527,12 @@ function transition(fromId,toId,dir){
 
 function goToStep(id){ const f=currentQId; currentQId=id; updateProgress(); transition(f,id,'forward'); }
 
-function nextStep(){
+async function nextStep(){
   if(!validateStep()) return;
   collectStep();
   const toId=getNextId();
   if(!toId){
-    saveLead('');
+    await saveLead('');
     redirectToBookingKoala();
     return;
   }
