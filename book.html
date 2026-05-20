@@ -674,7 +674,7 @@ async function saveLead(quoteStr){
   const sends = [];
 
   if(GHL_WEBHOOK) sends.push(
-    fetch(GHL_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:payload })
+    fetch(GHL_WEBHOOK, { method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain'}, body:payload })
       .catch(e => console.warn('GHL webhook failed:', e))
   );
 
