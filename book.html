@@ -465,7 +465,8 @@ body{background:var(--lime);color:var(--text);display:flex;flex-direction:column
 </footer>
 
 <script>
-const GHL_WEBHOOK = '';
+const GHL_WEBHOOK = 'https://services.leadconnectorhq.com/hooks/33eX4E0bBsIC3hM7Gm2g/webhook-trigger/0a61b226-66a2-4426-8fa9-8bb1851d6b84';
+const SHEETS_WEBHOOK = ''; // paste Apps Script web app URL here
 
 let currentQId = 'q-contact';
 const A = {
@@ -661,20 +662,28 @@ async function acceptQuote(){
 }
 
 async function saveLead(quoteStr){
-  if(!GHL_WEBHOOK) return;
-  try{
-    await fetch(GHL_WEBHOOK,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        first_name:A.firstName,phone:A.phone,
-        address:A.address,city_zip:A.cityZip,
-        service:A.service,bedrooms:A.bedrooms,bathrooms:A.bathrooms,
-        recent_cleaning:A.recentCleaning,
-        how_soon:A.howSoon,lead_score:A.leadScore,
-        quote:quoteStr
-      })
-    });
-  } catch(e){console.warn('Webhook failed:',e);}
+  const payload = JSON.stringify({
+    first_name:A.firstName, phone:A.phone,
+    address:A.address, city_zip:A.cityZip,
+    service:A.service, bedrooms:A.bedrooms, bathrooms:A.bathrooms,
+    recent_cleaning:A.recentCleaning,
+    how_soon:A.howSoon, lead_score:A.leadScore,
+    quote:quoteStr
+  });
+
+  const sends = [];
+
+  if(GHL_WEBHOOK) sends.push(
+    fetch(GHL_WEBHOOK, { method:'POST', headers:{'Content-Type':'application/json'}, body:payload })
+      .catch(e => console.warn('GHL webhook failed:', e))
+  );
+
+  if(SHEETS_WEBHOOK) sends.push(
+    fetch(SHEETS_WEBHOOK, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:payload })
+      .catch(e => console.warn('Sheets webhook failed:', e))
+  );
+
+  await Promise.all(sends);
 }
 
 document.addEventListener('keydown',(e)=>{
